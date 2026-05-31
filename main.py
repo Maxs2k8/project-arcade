@@ -1,14 +1,9 @@
-"""
-🎮 BALL CHAOS — Аркада с бонусами и настройками
-Версия: 3.0 (без достижений)
-"""
 import arcade
 import random
 import math
 import json
 import os
 
-# ==================== КОНСТАНТЫ ====================
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BALL_RADIUS = 30
 BASE_SPEED = 3
@@ -16,7 +11,6 @@ MAX_SPEED = 12
 SPEED_INCREMENT = 0.25
 POWERUP_CHANCE = 0.04
 
-# Цветовая палитра
 COLORS = {
     'bg_menu': arcade.color.DARK_BLUE_GRAY,
     'bg_game': arcade.color.DARK_GRAY,
@@ -45,7 +39,6 @@ DEFAULT_SETTINGS = {
     'fullscreen': False, 'ball_color': 'white',
 }
 
-# ==================== ВСПОМОГАТЕЛЬНЫЕ КЛАССЫ ====================
 class Star:
     def __init__(self):
         self.x = random.randint(0, SCREEN_WIDTH)
@@ -65,6 +58,7 @@ class Star:
     def draw(self):
         alpha = int(self.alpha * (0.7 + 0.3 * math.sin(self.twinkle)))
         arcade.draw_circle_filled(self.x, self.y, self.size, (*arcade.color.WHITE[:3], alpha))
+
 
 class Particle:
     def __init__(self, x, y, color, size=None, speed=None, lifetime=None):
@@ -100,7 +94,7 @@ class PowerUp:
         'slow': {'symbol': '🐌', 'color': COLORS['powerup_slow'], 'desc': 'Замедление'},
         'shield': {'symbol': '🛡️', 'color': COLORS['powerup_shield'], 'desc': 'Щит'},
         'bomb': {'symbol': '💥', 'color': COLORS['powerup_bomb'], 'desc': 'Бомба'},
-        'double': {'symbol': '⭐', 'color': COLORS['powerup_double'], 'desc': 'x2 очки'},
+        'double': {'symbol': '⭐', 'color': COLORS['powerup_double'], 'desc': 'x2 очки'}
     }
     
     def __init__(self, x, y, p_type):
@@ -146,6 +140,7 @@ class PowerUp:
             Particle(self.x + random.uniform(-20, 20), self.y + random.uniform(-20, 20),
                     self.config['color'], size=4, speed=2) for _ in range(20)
         ])
+
 
 class Ball(arcade.Sprite):
     COLOR_OPTIONS = {
@@ -229,6 +224,7 @@ class Ball(arcade.Sprite):
             self.change_y /= 0.4
             self.slowed = False
 
+
 class Button:
     def __init__(self, x, y, w, h, text, callback, enabled=True):
         self.x, self.y, self.w, self.h = x, y, w, h
@@ -274,6 +270,7 @@ class Button:
             arcade.draw_circle_filled(self.x + random.uniform(-self.w/3, self.w/3),
                                      self.y + random.uniform(-self.h/3, self.h/3),
                                      3, (*COLORS['accent'][:3], 100))
+
 
 class GameOverView(arcade.View):
     def __init__(self, final_time, final_score, combo, balls_count):
@@ -339,6 +336,7 @@ class GameOverView(arcade.View):
         if key == arcade.key.R: self.window.show_view(MyGame())
         elif key == arcade.key.M: self.window.show_view(MenuView())
         elif key == arcade.key.S: self.window.show_view(SettingsView(self))
+
 
 class SettingsView(arcade.View):
     def __init__(self, return_view):
@@ -414,6 +412,7 @@ class SettingsView(arcade.View):
     def on_key_press(self, key, mod):
         if key == arcade.key.ESCAPE: self.window.show_view(self.return_view)
 
+
 class PauseView(arcade.View):
     def __init__(self, game_view):
         super().__init__()
@@ -438,6 +437,7 @@ class PauseView(arcade.View):
         for b in self.buttons: b.on_release()
     def on_key_press(self, key, mod):
         if key in [arcade.key.P, arcade.key.ESCAPE]: self.window.show_view(self.game_view)
+
 
 class TutorialView(arcade.View):
     def __init__(self, next_view):
@@ -471,6 +471,7 @@ class TutorialView(arcade.View):
     def on_mouse_press(self, x, y, btn, mod):
         if self.step < len(self.steps) - 1: self.step += 1
         else: self.window.show_view(self.next_view)
+
 
 class MenuView(arcade.View):
     def __init__(self):
@@ -707,6 +708,7 @@ class MyGame(arcade.View):
             if key == arcade.key.R: self.window.show_view(MyGame())
             elif key == arcade.key.M: self.window.show_view(MenuView())
 
+
 def main():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, "🎮 Ball Chaos 🎮", fullscreen=False)
     window.best_time = 0.0
@@ -724,6 +726,7 @@ def main():
     window.show_view(MenuView())
     print("🎮 Ball Chaos запущен! ЛКМ — шарик, P — пауза, ESC — меню")
     arcade.run()
+
 
 if __name__ == "__main__":
     main()
